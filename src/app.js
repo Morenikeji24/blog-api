@@ -5,6 +5,7 @@ import helmet from "helmet";
 import { prisma } from "../lib/prisma.js";
 import path from "path";
 import { fileURLToPath } from "url";
+import wrap from "./middleware/asyncHandler.js";
 
 const app = express();
 
@@ -17,10 +18,15 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to the blog api" });
-});
+app.get(
+  "/",
+  wrap(async (req, res) => {
+    const users = await prisma.user.count();
+    res.json({ status: "Ok", users });
+  }),
+);
 
 app.use((req, res) => res.status(404).json({ error: "Route not found" }));
+app.use(require("./middleware/errorHandler.js"));
 
 export default app;
