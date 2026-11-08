@@ -3,15 +3,11 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import { prisma } from "../lib/prisma.js";
-import path from "path";
-import { fileURLToPath } from "url";
 import wrap from "./middleware/asyncHandler.js";
+import postRoutes from "./routes/posts.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 
 const app = express();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const assetsPath = path.join(__dirname, "public");
 
 app.use(helmet());
 app.use(cors());
@@ -25,6 +21,9 @@ app.get(
     res.json({ status: "Ok", users });
   }),
 );
+
+app.use("/api/auth", authRoutes);
+app.use("/api/posts", postRoutes);
 
 app.use((req, res) => res.status(404).json({ error: "Route not found" }));
 app.use(require("./middleware/errorHandler.js"));
