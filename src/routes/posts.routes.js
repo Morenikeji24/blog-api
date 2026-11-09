@@ -13,6 +13,8 @@ import {
   publishSchema,
 } from "../validators/posts.js";
 import * as posts from "../controllers/posts.controller.js";
+import { createCommentSchema } from "../validators/comments.js";
+import * as comments from "../controllers/comments.controller.js";
 
 const router = Router();
 
@@ -49,6 +51,22 @@ router.delete(
   authenticate,
   requireAuthor,
   wrap(posts.remove),
+);
+
+router.get(
+  "/:postId/comments",
+  parseId("postId"),
+  optionalAuth,
+  wrap(comments.listForPost),
+);
+router.post(
+  "/:postId/comments",
+  parseId(
+    "postId",
+    optionalAuth,
+    validate(createCommentSchema),
+    wrap(comments.create),
+  ),
 );
 
 export default router;
