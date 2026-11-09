@@ -6,6 +6,7 @@ import { prisma } from "../lib/prisma.js";
 import wrap from "./middleware/asyncHandler.js";
 import postRoutes from "./routes/posts.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import commentRoutes from "./routes/comments.routes.js";
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.get(
 
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
+app.use("/api/comments", commentRoutes);
 
 app.use((req, res) => res.status(404).json({ error: "Route not found" }));
 app.use(require("./middleware/errorHandler.js"));
