@@ -1,4 +1,4 @@
-import { prisma } from "../../lib/prisma";
+import { prisma } from "../../lib/prisma.js";
 
 const isPostAuthor = (user, post) =>
   user?.role === "AUTHOR" && user.id === post.authorId;
@@ -19,7 +19,7 @@ export const listForPost = async (req, res) => {
 
 export const create = async (req, res) => {
   const post = await prisma.post.findUnique({
-    where: { id: req.params.id },
+    where: { id: req.params.postId },
   });
 
   if (!post || !post.published) {
@@ -28,12 +28,10 @@ export const create = async (req, res) => {
 
   const username = req.user?.username || req.body.username;
   if (!username) {
-    return res
-      .status(400)
-      .json({
-        error: "Validation failed",
-        details: { username: ["Username is required"] },
-      });
+    return res.status(400).json({
+      error: "Validation failed",
+      details: { username: ["Username is required"] },
+    });
   }
 
   const comment = await prisma.comment.create({
