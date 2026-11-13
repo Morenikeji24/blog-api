@@ -61,12 +61,10 @@ router.get(
 );
 router.post(
   "/:postId/comments",
-  parseId(
-    "postId",
-    optionalAuth,
-    validate(createCommentSchema),
-    wrap(comments.create),
-  ),
+  parseId("postId"),
+  optionalAuth,
+  validate(createCommentSchema),
+  wrap(comments.create),
 );
 
 export default router;
